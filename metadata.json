@@ -1,0 +1,10 @@
+{
+  "name": "باركودي | Barcodey",
+  "description": "أداة احترافية ومتكاملة لإنشاء وتخصيص رموز QR والباركود بمختلف الأنواع، مع إمكانية إضافة شعار، وتغيير الألوان، والطباعة، والتصدير بصيغ عالية الجودة PNG, SVG, PDF.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

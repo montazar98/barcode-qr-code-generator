@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // User profile document
+    match /users/{userId} {
+      allow read: if true;
+      allow create: if isOwner(userId) && request.resource.data.uid == request.auth.uid;
+      allow update: if isOwner(userId) && request.resource.data.uid == request.auth.uid;
+      allow delete: if isOwner(userId);
+
+      // User saved codes subcollection
+      match /savedCodes/{codeId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == request.auth.uid;
+        allow update: if isOwner(userId) && request.resource.data.userId == request.auth.uid;
+        allow delete: if isOwner(userId);
+      }
+    }
+
+    // Conversions and generated links log collection
+    match /conversions_log/{conversionId} {
+      allow read, write: if true;
+    }
+
+    // Dynamic QRs collection
+    // Anyone can read for scanning/redirection lookup
+    // Only the authenticated owner can create, update, or delete their own dynamic QRs
+    match /dynamic_qrs/{qrId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && (resource.data.userId == request.auth.uid || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['scansCount', 'lastScannedAt']));
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // Health check test connection document
+    match /test/connection {
+      allow read: if true;
+    }
+  }
+}
+

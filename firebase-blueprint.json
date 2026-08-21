@@ -1,0 +1,207 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Registered user profile and preferences",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID"
+        },
+        "email": {
+          "type": "string",
+          "description": "User email address"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display name of the user"
+        },
+        "photoURL": {
+          "type": "string",
+          "description": "Avatar photo URL"
+        },
+        "isAnonymous": {
+          "type": "boolean",
+          "description": "Whether this is a guest anonymous account"
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Epoch timestamp of account creation"
+        },
+        "updatedAt": {
+          "type": "number",
+          "description": "Epoch timestamp of last update"
+        },
+        "preferredLanguage": {
+          "type": "string",
+          "enum": ["ar", "en"],
+          "description": "User preferred interface language"
+        },
+        "preferredTheme": {
+          "type": "string",
+          "enum": ["light", "dark"],
+          "description": "User preferred theme mode"
+        }
+      },
+      "required": ["uid", "createdAt"]
+    },
+    "SavedCode": {
+      "title": "SavedCode",
+      "description": "User cloud-synchronized QR or Barcode",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique code identifier"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user UID"
+        },
+        "title": {
+          "type": "string",
+          "description": "User assigned title for the code"
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["qr", "barcode"],
+          "description": "Code kind"
+        },
+        "subType": {
+          "type": "string",
+          "description": "Subtype (e.g. url, wifi, vcard, CODE128, EAN13)"
+        },
+        "rawValue": {
+          "type": "string",
+          "description": "Raw string or payload encoded"
+        },
+        "previewDataUrl": {
+          "type": "string",
+          "description": "Data URL preview of generated code"
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Epoch creation timestamp"
+        }
+      },
+      "required": ["id", "userId", "kind", "rawValue", "createdAt"]
+    },
+    "ConversionLog": {
+      "title": "ConversionLog",
+      "description": "Audit log of links and data converted into QR codes and Barcodes",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique log entry ID"
+        },
+        "userId": {
+          "type": "string",
+          "description": "User UID who generated the code"
+        },
+        "userName": {
+          "type": "string",
+          "description": "User display name"
+        },
+        "userEmail": {
+          "type": "string",
+          "description": "User email address"
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["qr", "barcode"],
+          "description": "Kind of code"
+        },
+        "subType": {
+          "type": "string",
+          "description": "Subtype (url, text, wifi, vcard, barcode format)"
+        },
+        "rawValue": {
+          "type": "string",
+          "description": "The converted raw URL or payload"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title or label for the converted item"
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Epoch timestamp of conversion"
+        }
+      },
+      "required": ["id", "kind", "rawValue", "createdAt"]
+    },
+    "DynamicQR": {
+      "title": "DynamicQR",
+      "description": "Smart dynamic QR code with editable target destination and scan metrics",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique short code identifier"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Creator user UID"
+        },
+        "userEmail": {
+          "type": "string",
+          "description": "Creator user email"
+        },
+        "userName": {
+          "type": "string",
+          "description": "Creator user display name"
+        },
+        "title": {
+          "type": "string",
+          "description": "Campaign title"
+        },
+        "targetUrl": {
+          "type": "string",
+          "description": "Dynamic destination URL"
+        },
+        "shortUrl": {
+          "type": "string",
+          "description": "Short redirection URL"
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "number",
+          "description": "Last updated timestamp"
+        },
+        "scansCount": {
+          "type": "number",
+          "description": "Number of scans"
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Whether the redirection is active"
+        }
+      },
+      "required": ["id", "userId", "targetUrl", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User document containing profile details"
+    },
+    "/users/{userId}/savedCodes/{codeId}": {
+      "schema": "SavedCode",
+      "description": "Subcollection of cloud saved QR and Barcode designs owned by the user"
+    },
+    "/conversions_log/{conversionId}": {
+      "schema": "ConversionLog",
+      "description": "System-wide log of generated QR codes, barcodes, and converted links"
+    },
+    "/dynamic_qrs/{qrId}": {
+      "schema": "DynamicQR",
+      "description": "Collection of dynamic QR codes"
+    }
+  }
+}
+

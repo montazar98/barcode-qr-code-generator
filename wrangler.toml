@@ -1,0 +1,13 @@
+name = "barcode-qr-studio"
+main = "worker.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "barcode-analytics"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
